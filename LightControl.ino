@@ -1,6 +1,7 @@
 #include <EEPROM.h>
 
 #define dimmMin 1
+#define dimmStep 20
 #define dimmMax 255
 
 #define EEPROM_ADDRESS_DIMM 0
@@ -10,6 +11,9 @@ byte dimmLevel = dimmMax;
 void lightSetup() {
   pinMode(LED_PIN, OUTPUT);
   dimmLevel = EEPROM.read(EEPROM_ADDRESS_DIMM);
+  if(dimmLevel < dimmMin) {
+    dimmLevel = dimmMin;
+  }
 }
 
 void lightSaveData() {
@@ -25,9 +29,11 @@ void lightOff() {
 }
 
 void lightDimm() {
-  dimmLevel = (dimmLevel - 1) % dimmMax;
+  dimmLevel = (dimmLevel - dimmStep) % dimmMax;
   if(dimmLevel < dimmMin) {
     dimmLevel = dimmMax;
   }
+  Serial.print("dim: ");
+  Serial.println(dimmLevel);
   lightOn(); // Turn light 'on' to effectuate dimm
 }

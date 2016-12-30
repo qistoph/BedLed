@@ -2,12 +2,12 @@
 // ATtiny85: 0 and 1
 // ATmega328: 3, 5, 6, 9, 10, and 11
 #define LED_PIN 0
-#define CAP_SEND_PIN 1
-#define CAP_SENS_PIN 2
-#define PIN_UNUSED_1 3
-#define TX 4
+#define CAP_SEND_PIN 3
+#define CAP_SENS_PIN 4
+#define PIN_UNUSED_1 2
+#define TX 1
 
-#define CAP_SAMPLES 30
+#define CAP_SAMPLES 5
 #define CAP_THRESHOLD 200
 
 #define DIMM_TIMEOUT 1000
@@ -28,6 +28,10 @@ void setup() {
   Serial.begin(9600);
   capsenseSetup();
   lightSetup();
+
+  digitalWrite(LED_PIN, 1);
+  delay(500);
+  digitalWrite(LED_PIN, 0);
 }
 
 bool wasTouching = false;
@@ -37,14 +41,14 @@ void loop() {
   bool stableTouch = capsenseReadTouch();
 
   if(stableTouch != wasTouching) {
-    // stage change
+    // state change
     if(stableTouch) {
       // Release -> Touch
-      Serial.print("Touch");
+      Serial.println("Touch");
       onTouch();
     } else {
       // Touch -> Release
-      Serial.print("Release");
+      Serial.println("Release");
       onTouchRelease();
     }
     wasTouching = stableTouch;
