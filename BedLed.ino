@@ -1,11 +1,11 @@
 // LED_PIN must support PWM,
-// ATtiny85: 0 and 1
+// ATtiny85: 0 and 1. Use core from https://github.com/SpenceKonde/ATTinyCore
 // ATmega328: 3, 5, 6, 9, 10, and 11
 #define LED_PIN 0
 #define CAP_SEND_PIN 3
 #define CAP_SENS_PIN 4
-#define PIN_UNUSED_1 2
-#define TX 1
+#define PIN_UNUSED_1 1
+#define TX 2 // As used hardcoded by TinyDebugSerial
 
 #define CAP_SAMPLES 5
 #define CAP_THRESHOLD 200
@@ -22,7 +22,6 @@
 
 void setup() {
   pinMode(PIN_UNUSED_1, INPUT_PULLUP);
-  //pinMode(PIN_UNUSED_2, INPUT_PULLUP);
   
   // put your setup code here, to run once:
   Serial.begin(9600);
