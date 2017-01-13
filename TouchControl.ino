@@ -14,6 +14,9 @@ void onTouching() {
   if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
     turnOffAtRelease = false;
     lightDimm();
+
+    // Hack: set touchStartedAt to that after DIMM_STEP_TIME the DIMM_TIMEOUT is reached again
+    touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
   }
 }
 
