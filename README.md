@@ -19,11 +19,11 @@
 
 J1 - Jumper options:
 - 1-2: Pin 6 (PB1) connected to Q1 gate
-- 2-2: Pin 5 (PB0) connected to Q1 gate
+- 2-3: Pin 5 (PB0) connected to Q1 gate
 
 Connector pins:
 - J1, 1 - Pin 6 (PB1, MISO)
-- - J1, 2 - Q1 gate
+- J1, 2 - Q1 gate
 - J1, 3 - Pin 5 (PB0, MOSI)
 - J2, 1 - Pin 7 (PB2, SCK)
 - J2, 2 - GND
