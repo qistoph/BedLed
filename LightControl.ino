@@ -1,9 +1,5 @@
 #include <EEPROM.h>
 
-#define dimmMin 1
-#define dimmStep 20
-#define dimmMax 255
-
 #define EEPROM_ADDRESS_DIMM 0
 
 int dimmLevel = dimmMax;
@@ -28,7 +24,7 @@ void lightOn() {
   // PCKE  - 0 - Disable PCK (PLL as clock), wait for PLL Lock first
   // PLLE  - 1 - Enable PLL
   // PLOC  - R
-  PLLCSR = _BV(LSM) | _BV(PLLE); // Start PLL, NO Low Speed Mode
+  PLLCSR = _BV(LSM) | _BV(PLLE); // Start PLL, Low Speed Mode
   while (!(PLLCSR & (1<<PLOCK))); //Wait for PLL lock
   PLLCSR |= _BV(PCKE); // Use PLL as clock source
 

@@ -9,16 +9,28 @@
 // Check datasheet page 99 for required frequency
 
 #define LED_PIN 1
-#define CAP_SEND_PIN 3
-#define CAP_SENS_PIN 4
+#define BTN1_PIN 3
+#define BTN2_PIN 4
 #define PIN_UNUSED_1 0
 #define TX 2 // As used hardcoded by TinyDebugSerial
 
-#define CAP_SAMPLES 5
-#define CAP_THRESHOLD 200
-
+// Times are in ms
+// DEBOUNCE_DELAY: time to allow jitter on a button before accepting its new state
+// DIMM_TIMEOUT:   time to wait, after pressing a button, before starting to dimm
+// DIMM_STEP_TIME: time between stepping to the next dimm level
+#define DEBOUNCE_DELAY 50
 #define DIMM_TIMEOUT 1000
 #define DIMM_STEP_TIME 500
+
+// Dimm settings
+// dimmMin: minimum dimm level (as written to OCR1A
+// dimmStep: increase per dimm step
+// dimmMax: value at which the dimm level is reset to dimmMin
+#define dimmMin 1
+#define dimmStep 20
+#define dimmMax 255
+
+// End of configuration
 
 #include <TinyDebugSerial.h> // 3860 -> 196
 
@@ -30,11 +42,10 @@
 
 void setup() {
   pinMode(PIN_UNUSED_1, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
   
   // put your setup code here, to run once:
   Serial.begin(9600);
-  capsenseSetup();
+  buttonsSetup();
   lightSetup();
 
   digitalWrite(LED_PIN, 1);
@@ -49,7 +60,7 @@ unsigned long now = 0;
 void loop() {
   loopStart = millis();
 
-  bool stableTouch = capsenseReadTouch();
+  bool stableTouch = buttonsReadTouch();
 
   if(stableTouch != wasTouching) {
     // state change
