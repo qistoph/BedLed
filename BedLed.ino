@@ -1,6 +1,8 @@
 // NOTE!!!
 // Set #undef USE_SOFTWARE_SERIAL in ATTinyCore\hardware\avr\1.1.2\variants\tinyX5\pins_arduino.h
 
+// 60+190+60 = 310
+
 // LED_PIN must support PWM,
 // ATtiny85: 0 and 1. Use core from https://github.com/SpenceKonde/ATTinyCore
 // ATmega328: 3, 5, 6, 9, 10, and 11
