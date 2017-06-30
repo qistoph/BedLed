@@ -55,22 +55,28 @@ void setup() {
   digitalWrite(LED_PIN, 0);
 }
 
-bool wasTouching = false;
+uint8_t wasTouching = false;
 unsigned long loopStart = 0;
 unsigned long now = 0;
 
 void loop() {
   loopStart = millis();
 
-  bool stableTouch = buttonsReadTouch();
+  uint8_t stableTouch = buttonsReadTouch();
 
   if(stableTouch != wasTouching) {
+    Serial.print("stableTouch: ");
+    Serial.println(stableTouch);
+
     // state change
-    if(stableTouch) {
+    if(stableTouch == 3) {
+      Serial.println("EASTER EGG MODE!");
+      easterEgg();
+    } else if(stableTouch && !wasTouching) {
       // Release -> Touch
       Serial.println("Touch");
       onTouch();
-    } else {
+    } else if(!stableTouch && wasTouching) {
       // Touch -> Release
       Serial.println("Release");
       onTouchRelease();

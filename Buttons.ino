@@ -18,10 +18,14 @@ void updateButtonState(uint8_t pin, uint8_t index) {
   }
 }
 
-bool buttonsReadTouch() {
+uint8_t buttonsReadTouch() {
   updateButtonState(BTN1_PIN, 0);
   updateButtonState(BTN2_PIN, 1);
 
   // Using internal pull-up, so LOW means touch
-  return (buttonState[0] == LOW) || (buttonState[1] == LOW);
+  // 0 - Non pressed
+  // 1 - BTN1 pressed
+  // 2 - BTN2 pressed
+  // 3 - BTN1 and BTN2 pressed
+  return ((buttonState[0] == LOW) ? 1 : 0) | ((buttonState[1] == LOW) ? 2 : 0);
 }
