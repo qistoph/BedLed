@@ -1,6 +1,8 @@
 #ifndef FAKE_SERIAL_H
 #define FAKE_SERIAL_H
 
+#include <Stream.h>
+
 class FakeSerial : public Stream {
   public:
     FakeSerial() {};

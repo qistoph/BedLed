@@ -9,9 +9,20 @@ int lastButtonState[2] = { HIGH, HIGH }; // Using internal pull-up, so default h
 
 void updateButtonState(uint8_t pin, uint8_t index) {
   int reading = digitalRead(pin);
+
+  //Serial.print("Pin ");
+  //Serial.print(pin);
+  //Serial.print(": ");
+  //Serial.println(reading);
+
   if (reading != lastButtonState[index]) {
     lastDebounceTime[index] = millis();
+    lastButtonState[index] = reading;
   }
+
+  //Serial.println(millis());
+  //Serial.println(lastDebounceTime[index]);
+  //Serial.println(DEBOUNCE_DELAY);
 
   if ((millis() - lastDebounceTime[index]) > DEBOUNCE_DELAY) {
     buttonState[index] = reading;
@@ -21,6 +32,11 @@ void updateButtonState(uint8_t pin, uint8_t index) {
 uint8_t buttonsReadTouch() {
   updateButtonState(BTN1_PIN, 0);
   updateButtonState(BTN2_PIN, 1);
+
+  //Serial.print("\rButtons: ");
+  //Serial.print(buttonState[0]);
+  //Serial.print(", ");
+  //Serial.print(buttonState[1]);
 
   // Using internal pull-up, so LOW means touch
   // 0 - Non pressed
