@@ -53,14 +53,39 @@ void setup() {
   // put your setup code here, to run once:
   OSCCAL = 0x6A;
   Serial.begin(9600);
+  Serial.println("PWM frequency, register check - pre setup:");
+  Serial.println("TODO: Fuses..."); // http://www.engbedded.com/fusecalc/
+  Serial.print("PLLCSR: "); Serial.println(PLLCSR, HEX);
+  Serial.print("TCCR1: "); Serial.println(TCCR1, HEX);
+  Serial.print("OCR1C: "); Serial.println(OCR1C, HEX);
+  Serial.print("OCR1A: "); Serial.println(OCR1A, HEX);
+
   Serial.println("Running setup");
   buttonsSetup();
   lightSetup();
 
+  Serial.println("PWM frequency, register check - setup/lightOn:");
+  Serial.print("PLLCSR: "); Serial.println(PLLCSR, HEX);
+  Serial.print("TCCR1: "); Serial.println(TCCR1, HEX);
+  Serial.print("OCR1C: "); Serial.println(OCR1C, HEX);
+  Serial.print("OCR1A: "); Serial.println(OCR1A, HEX);
+
   Serial.println("Blink LED");
-  digitalWrite(LED_PIN, 1);
+  lightOn();
+  Serial.println("PWM frequency, register check - lightOn/lightOff:");
+  Serial.print("PLLCSR: "); Serial.println(PLLCSR, HEX);
+  Serial.print("TCCR1: "); Serial.println(TCCR1, HEX);
+  Serial.print("OCR1C: "); Serial.println(OCR1C, HEX);
+  Serial.print("OCR1A: "); Serial.println(OCR1A, HEX);
+
   delay(500);
-  digitalWrite(LED_PIN, 0);
+  lightOff();
+
+  Serial.println("PWM frequency, register check - post lightOff:");
+  Serial.print("PLLCSR: "); Serial.println(PLLCSR, HEX);
+  Serial.print("TCCR1: "); Serial.println(TCCR1, HEX);
+  Serial.print("OCR1C: "); Serial.println(OCR1C, HEX);
+  Serial.print("OCR1A: "); Serial.println(OCR1A, HEX);
 }
 
 uint8_t wasTouching = false;
