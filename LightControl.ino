@@ -33,8 +33,8 @@ void lightOn() {
   // CTC1       -    1 - Reset timer after compare match with OCR1C (p.89)
   // PWM1A      -    1 - Enable PWM mode (p.89)
   // COM1A[1:0] -   01 - OC1A cleared on compare match, set when TCNT1 = $00. (!OC1A) set on compare match, cleared when TCNT1 = $00. (p.86)
-  // CS1[3:0]   - 0011 - PCK/4 (p.88)
-  TCCR1 = _BV(CTC1) | _BV(PWM1A) | 0 | _BV(COM1A0) | 0 | 0 | _BV(CS11) | _BV(CS10);
+  // CS1[3:0]   - 0010 - PCK/2 (p.88)
+  TCCR1 = _BV(CTC1) | _BV(PWM1A) | 0 | _BV(COM1A0) | 0 | 0 | _BV(CS11) | 0;
 }
 
 void lightOff() {
