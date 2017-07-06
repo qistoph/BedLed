@@ -113,6 +113,8 @@ void loop() {
       // Touch -> Release
       Serial.println("Release");
       onTouchRelease();
+
+      deepSleep();
     }
     wasTouching = stableTouch;
   } else if(stableTouch) {
