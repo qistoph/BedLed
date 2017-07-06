@@ -24,6 +24,7 @@ void lightOn() {
   // PLLE  - 1 - Enable PLL
   // PLOC  - R
   PLLCSR = _BV(PLLE); // Start PLL, No Low Speed Mode
+  delayMicroseconds(100);
   while (!(PLLCSR & (1<<PLOCK))); //Wait for PLL lock
   PLLCSR |= _BV(PCKE); // Use PLL as clock source
 
