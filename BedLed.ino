@@ -54,6 +54,8 @@
 //TODO: remove after fuse checking/fixing
 #include <avr/boot.h>
 
+bool deepSleepEnabled = false;
+
 void setup() {
   pinMode(PIN_UNUSED_1, INPUT_PULLUP);
   
@@ -90,6 +92,14 @@ void setup() {
   Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
+
+  if(digitalRead(BTN1_PIN) && digitalRead(BTN2_PIN)) {
+    deepSleepEnabled = true;
+    Serial.println(F("Buttons pressed, enabling deep sleep"));
+  } else {
+    deepSleepEnabled = false;
+    Serial.println(F("Buttons not both pressed, disabling deep sleep"));
+  }
 
   Serial.println(F("PWM frequency, register check - pre setup:"));
   Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
@@ -147,7 +157,9 @@ void loop() {
       Serial.println("Release");
       onTouchRelease();
 
-      deepSleep();
+      if(deepSleepEnabled) {
+        deepSleep();
+      }
     }
     wasTouching = stableTouch;
   } else if(stableTouch) {
