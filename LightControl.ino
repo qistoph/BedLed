@@ -44,7 +44,7 @@ void lightOff() {
 
 void lightDimm() {
   if(dimmLevel >= dimmMax) {
-    dimmLevel = 1;
+    dimmLevel = dimmMin;
   } else {
     dimmLevel = dimmLevel * 2;
   }

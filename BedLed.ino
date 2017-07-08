@@ -32,7 +32,7 @@
 // dimmMin: minimum dimm level (as written to OCR1A
 // dimmStep: increase per dimm step
 // dimmMax: value at which the dimm level is reset to dimmMin
-#define dimmMin 1
+#define dimmMin 8
 #define dimmStep 20
 #define dimmMax 255
 
@@ -60,7 +60,7 @@ void setup() {
   pinMode(PIN_UNUSED_1, INPUT_PULLUP);
   
   // put your setup code here, to run once:
-  OSCCAL = 0x6A;
+  OSCCAL = 0x6F;
   Serial.begin(9600);
 
   // TODO: remove all this checking stuff
@@ -93,15 +93,10 @@ void setup() {
   buttonsSetup();
   lightSetup();
 
-  if(digitalRead(BTN1_PIN) && digitalRead(BTN2_PIN)) {
-    deepSleepEnabled = true;
-    Serial.println(F("Buttons pressed, enabling deep sleep"));
-  } else {
-    deepSleepEnabled = false;
-    Serial.println(F("Buttons not both pressed, disabling deep sleep"));
-  }
+  deepSleepEnabled = true;
+  Serial.println(F("Enabling deep sleep"));
 
-  Serial.println(F("PWM frequency, register check - pre setup:"));
+  Serial.println(F("PWM frequency, register check - post setup:"));
   Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
   Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
   Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
@@ -111,7 +106,7 @@ void setup() {
 
   Serial.println(F("Blink LED"));
   lightOn();
-  Serial.println(F("PWM frequency, register check - pre setup:"));
+  Serial.println(F("PWM frequency, register check - post lightOn:"));
   Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
   Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
   Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
@@ -122,7 +117,7 @@ void setup() {
   delay(500);
   lightOff();
 
-  Serial.println(F("PWM frequency, register check - pre setup:"));
+  Serial.println(F("PWM frequency, register check - post lightOff:"));
   Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
   Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
   Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
@@ -134,6 +129,8 @@ void setup() {
 uint8_t wasTouching = false;
 unsigned long loopStart = 0;
 unsigned long now = 0;
+
+extern bool lightIsOn;
 
 void loop() {
   loopStart = millis();
@@ -156,14 +153,20 @@ void loop() {
       // Touch -> Release
       Serial.println("Release");
       onTouchRelease();
-
-      if(deepSleepEnabled) {
-        deepSleep();
-      }
     }
     wasTouching = stableTouch;
   } else if(stableTouch) {
     // Still touching
     onTouching();
+  }
+
+//  Serial.print(F("lightIsOn: "));
+//  Serial.println(lightIsOn);
+//  Serial.print(F("stableTouch: "));
+//  Serial.println(stableTouch);
+//  Serial.print(F("deepSleepEnabled: "));
+//  Serial.println(deepSleepEnabled);
+  if(!lightIsOn && stableTouch == 0 && deepSleepEnabled) {
+    deepSleep();
   }
 }

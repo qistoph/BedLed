@@ -1,10 +1,12 @@
 bool turnOffAtRelease = true;
-bool lightIsOn = true;
+bool lightIsOn = false;
 unsigned long touchStartedAt = 0;
 
 void onTouch() {
   touchStartedAt = millis();
+  turnOffAtRelease = true;
   if(!lightIsOn) {
+    turnOffAtRelease = false;
     lightOn();
     lightIsOn = true;
   }
@@ -22,6 +24,8 @@ void onTouching() {
 }
 
 void onTouchRelease() {
+  Serial.print(F("turnOffAtRelease: "));
+  Serial.println(turnOffAtRelease);
   if(turnOffAtRelease) {
     lightOff();
     lightIsOn = false;
@@ -30,5 +34,4 @@ void onTouchRelease() {
     // Save the current dimm level to EEPROM
     lightSaveData();
   }
-  turnOffAtRelease = lightIsOn;
 }
