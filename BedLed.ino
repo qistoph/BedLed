@@ -63,32 +63,6 @@ void setup() {
   OSCCAL = 0x6F;
   Serial.begin(9600);
 
-  // TODO: remove all this checking stuff
-  Serial.println(F("PWM frequency, register check - pre setup:"));
-  Serial.print(F("Fuses (L/H/E): ")); // http://www.engbedded.com/fusecalc/
-  Serial.print(boot_lock_fuse_bits_get(GET_LOW_FUSE_BITS), HEX);
-  Serial.print(F("/"));
-  Serial.print(boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS), HEX);
-  Serial.print(F("/"));
-  Serial.print(boot_lock_fuse_bits_get(GET_EXTENDED_FUSE_BITS), HEX);
-  Serial.println();
-  Serial.print(F("Lock bits: "));
-  Serial.println(boot_lock_fuse_bits_get(GET_LOCK_BITS));
-  Serial.print(F("Signature: "));
-  Serial.print(boot_signature_byte_get(0), HEX);
-  Serial.print(boot_signature_byte_get(2), HEX);
-  Serial.println(boot_signature_byte_get(4), HEX);
-  Serial.print(F("8.0 MHz cal: "));
-  Serial.println(boot_signature_byte_get(1), HEX);
-  Serial.print(F("6.4 MHz cal: "));
-  Serial.println(boot_signature_byte_get(3), HEX);
-  Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
-  Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
-  Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
-  Serial.print(F("OCR1A: ")); Serial.println(OCR1A, HEX);
-  Serial.print(F("TCCR0A: ")); Serial.println(TCCR0A, HEX);
-  Serial.print(F("TCCR0B: ")); Serial.println(TCCR0B, HEX);
-
   Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
@@ -96,34 +70,10 @@ void setup() {
   deepSleepEnabled = true;
   Serial.println(F("Enabling deep sleep"));
 
-  Serial.println(F("PWM frequency, register check - post setup:"));
-  Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
-  Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
-  Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
-  Serial.print(F("OCR1A: ")); Serial.println(OCR1A, HEX);
-  Serial.print(F("TCCR0A: ")); Serial.println(TCCR0A, HEX);
-  Serial.print(F("TCCR0B: ")); Serial.println(TCCR0B, HEX);
-
   Serial.println(F("Blink LED"));
   lightOn();
-  Serial.println(F("PWM frequency, register check - post lightOn:"));
-  Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
-  Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
-  Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
-  Serial.print(F("OCR1A: ")); Serial.println(OCR1A, HEX);
-  Serial.print(F("TCCR0A: ")); Serial.println(TCCR0A, HEX);
-  Serial.print(F("TCCR0B: ")); Serial.println(TCCR0B, HEX);
-
   delay(500);
   lightOff();
-
-  Serial.println(F("PWM frequency, register check - post lightOff:"));
-  Serial.print(F("PLLCSR: ")); Serial.println(PLLCSR, HEX);
-  Serial.print(F("TCCR1: ")); Serial.println(TCCR1, HEX);
-  Serial.print(F("OCR1C: ")); Serial.println(OCR1C, HEX);
-  Serial.print(F("OCR1A: ")); Serial.println(OCR1A, HEX);
-  Serial.print(F("TCCR0A: ")); Serial.println(TCCR0A, HEX);
-  Serial.print(F("TCCR0B: ")); Serial.println(TCCR0B, HEX);
 }
 
 uint8_t wasTouching = false;
