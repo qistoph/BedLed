@@ -16,7 +16,6 @@
 
 J1 - Jumper options:
 - 1-2: Pin 6 (PB1) connected to Q1 gate
-- 2-3: Pin 5 (PB0) connected to Q1 gate
 
 Connector pins:
 - J1, 1 - Pin 6 (PB1, MISO)
@@ -31,3 +30,13 @@ J2 - ISP
 - 5: RESET
 - 6: GND
 
+J3 - RF expansion
+- 1: GND
+- 2: NC
+- 3: Dat
+- 4: VCC
+
+## Flashing
+To prevent interruptions during flashing:
+- Disconnect the MOSFET by removing the jumper on J1 (freeing pin 6 - MISO)
+- Remove the RF expansion (freeing pin 5 - MOSI)
