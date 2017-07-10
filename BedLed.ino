@@ -128,7 +128,9 @@ void setup() {
 
 uint8_t wasTouching = false;
 unsigned long loopStart = 0;
-unsigned long now = 0;
+unsigned long sleepAt = 0;
+unsigned long eeStart = 0;
+bool startEe = false;
 
 extern bool lightIsOn;
 
@@ -142,16 +144,13 @@ void loop() {
     Serial.println(stableTouch);
 
     // state change
-    if(stableTouch == 3) {
-      Serial.println("EASTER EGG MODE!");
-      easterEgg();
-    } else if(stableTouch && !wasTouching) {
+    if(stableTouch && !wasTouching) {
       // Release -> Touch
-      Serial.println("Touch");
+      Serial.println(F("Touch"));
       onTouch();
     } else if(!stableTouch && wasTouching) {
       // Touch -> Release
-      Serial.println("Release");
+      Serial.println(F("Release"));
       onTouchRelease();
     }
     wasTouching = stableTouch;
@@ -160,13 +159,27 @@ void loop() {
     onTouching();
   }
 
+  if(stableTouch == 3) {
+    if(eeStart == 0) {
+      eeStart = millis() + 2000;
+      startEe = true;
+    } else if(millis() > eeStart && startEe) {
+      Serial.println("EASTER EGG MODE!");
+      easterEgg();
+      startEe = false;
+    }
+  } else {
+    eeStart = 0;
+  }
+
 //  Serial.print(F("lightIsOn: "));
 //  Serial.println(lightIsOn);
 //  Serial.print(F("stableTouch: "));
 //  Serial.println(stableTouch);
 //  Serial.print(F("deepSleepEnabled: "));
 //  Serial.println(deepSleepEnabled);
-  if(!lightIsOn && stableTouch == 0 && deepSleepEnabled) {
+  if(!lightIsOn && millis() > sleepAt && deepSleepEnabled) {
     deepSleep();
+    sleepAt = millis() + 100; // Allow at least 100ms to detect button presses before sleeping again
   }
 }

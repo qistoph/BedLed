@@ -1,4 +1,4 @@
-#define MDT 200
+#define MDT 150
 #define MDH (3*MDT)
 #define MLS MDH
 #define MWS (7*MDT)
