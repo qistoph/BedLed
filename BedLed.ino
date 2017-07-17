@@ -5,7 +5,7 @@
 
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
-// Clock: 8MHz internal
+// Clock: 1MHz internal
 
 // LED_PIN must support PWM,
 // ATtiny85: 0 and 1. Use core from https://github.com/SpenceKonde/ATTinyCore
@@ -17,7 +17,7 @@
 #define LED_PIN 1
 #define BTN1_PIN 3
 #define BTN2_PIN 4
-#define PIN_UNUSED_1 0
+#define RF_PIN 0
 #define TX 2 // As used hardcoded by TinyDebugSerial
 
 // Times are in ms
@@ -47,18 +47,17 @@
 //#include "FakeSerial.h" // 2676
 //FakeSerial Serial;
 
+#include "NewKakuReceiver.h"
+
 #ifndef SIGRD // used in boot.h by boot_signature_byte_get_short(addr)
 #define SIGRD RSIG
 #endif
 
-//TODO: remove after fuse checking/fixing
-#include <avr/boot.h>
-
 bool deepSleepEnabled = false;
 
+volatile uint8_t *_receivePortRegister;
+
 void setup() {
-  pinMode(PIN_UNUSED_1, INPUT_PULLUP);
-  
   // put your setup code here, to run once:
   OSCCAL = 0x6F;
   Serial.begin(9600);
@@ -66,9 +65,21 @@ void setup() {
   Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
+  kakuSetup();
 
   deepSleepEnabled = true;
   Serial.println(F("Enabling deep sleep"));
+
+  // Setup interrupts
+  *digitalPinToPCICR(RF_PIN) |= _BV(digitalPinToPCICRbit(RF_PIN)); // Enable PIN interrupts in general for RF (and buttons, because same register in ATTiny)
+  *digitalPinToPCICR(BTN1_PIN) |= _BV(digitalPinToPCICRbit(BTN1_PIN)); //TODO: remove?
+  *digitalPinToPCICR(BTN2_PIN) |= _BV(digitalPinToPCICRbit(BTN2_PIN)); //TODO: remove?
+
+  *digitalPinToPCMSK(RF_PIN) |= _BV(digitalPinToPCMSKbit(RF_PIN)); // Enable interrupt on RF
+  *digitalPinToPCMSK(BTN1_PIN) |= _BV(digitalPinToPCMSKbit(BTN1_PIN)); // Enable interrupt on button 1
+  *digitalPinToPCMSK(BTN2_PIN) |= _BV(digitalPinToPCMSKbit(BTN2_PIN)); // Enable interrupt on button 2
+
+  _receivePortRegister = portInputRegister(digitalPinToPort(RF_PIN));
 
   Serial.println(F("Blink LED"));
   lightOn();
@@ -83,6 +94,17 @@ unsigned long eeStart = 0;
 bool startEe = false;
 
 extern bool lightIsOn;
+
+// Interrupt handler, called for button and RF interrupts
+byte volatile RFState =  0;
+ISR(PCINT0_vect) {
+  byte portstate= *_receivePortRegister & _BV(RF_PIN);
+  if (RFState != portstate)
+  {
+    RFState = portstate;
+    NewKaku_interruptHandler();
+  }
+}
 
 void loop() {
   loopStart = millis();
@@ -120,6 +142,29 @@ void loop() {
     }
   } else {
     eeStart = 0;
+  }
+
+  if(NewKaku.address) {
+    Serial.print(F("KaKu msg: dev: "));
+    Serial.print(NewKaku.address, DEC);
+    Serial.print(F(", unit: "));
+    Serial.print(NewKaku.unit, DEC);
+    Serial.print(F(", type: "));
+    Serial.print(NewKaku.switchType, DEC);
+    Serial.print(F(", dim: "));
+    Serial.print(NewKaku.dimLevel, DEC);
+    Serial.print(F(", group: "));
+    Serial.println(NewKaku.groupBit, DEC);
+
+    if(NewKaku.address == 17517474 && NewKaku.unit == 12) {
+      if(NewKaku.switchType == 1) {
+        lightOn();
+      } else if(NewKaku.switchType == 0) {
+        lightOff();
+      }
+    }
+
+    NewKaku.address = 0;
   }
 
 //  Serial.print(F("lightIsOn: "));
