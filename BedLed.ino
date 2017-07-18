@@ -1,7 +1,7 @@
 // NOTE!!!
 // Set #undef USE_SOFTWARE_SERIAL in ATTinyCore\hardware\avr\1.1.2\variants\tinyX5\pins_arduino.h
-
-// 60+190+60 = 310
+// Apply the FlashStringHelper-patch to ATTinyCore
+// Uses: TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial)
 
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
@@ -9,7 +9,6 @@
 
 // LED_PIN must support PWM,
 // ATtiny85: 0 and 1. Use core from https://github.com/SpenceKonde/ATTinyCore
-// ATmega328: 3, 5, 6, 9, 10, and 11
 
 //TODO:
 // Check datasheet page 99 for required frequency
