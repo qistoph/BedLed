@@ -1,19 +1,17 @@
-#include <EEPROM.h>
-
-#define EEPROM_ADDRESS_DIMM 0
+#include "Storage.h"
 
 int dimmLevel = dimmMax;
 
 void lightSetup() {
   pinMode(LED_PIN, OUTPUT);
-  dimmLevel = EEPROM.read(EEPROM_ADDRESS_DIMM);
+  eepromLoad(STORAGE_DIMM_ADDRESS, &dimmLevel, sizeof(dimmLevel));
   if(dimmLevel < dimmMin) {
     dimmLevel = dimmMin;
   }
 }
 
 void lightSaveData() {
-  EEPROM.write(EEPROM_ADDRESS_DIMM, dimmLevel);
+  eepromSave(STORAGE_DIMM_ADDRESS, &dimmLevel, sizeof(dimmLevel));
 }
 
 void lightOn() {
@@ -36,10 +34,13 @@ void lightOn() {
   // COM1A[1:0] -   01 - OC1A cleared on compare match, set when TCNT1 = $00. (!OC1A) set on compare match, cleared when TCNT1 = $00. (p.86)
   // CS1[3:0]   - 0010 - PCK/2 (p.88)
   TCCR1 = _BV(CTC1) | _BV(PWM1A) | 0 | _BV(COM1A0) | 0 | 0 | _BV(CS11) | 0;
+
+  Serial.println(F("On"));
 }
 
 void lightOff() {
   TCCR1 = 0; // Disable timer 1
+  Serial.println(F("Off"));
 }
 
 void lightDimm() {
@@ -56,4 +57,15 @@ void lightDimm() {
   Serial.print("dim: ");
   Serial.println(dimmLevel);
   lightOn(); // Turn light 'on' to effectuate dimm
+}
+
+void lightBlink(uint8_t count) {
+  for(;count;) {
+    lightOn();
+    delay(250);
+    lightOff();
+    if(--count) {
+      delay(250);
+    }
+  }
 }

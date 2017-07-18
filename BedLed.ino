@@ -62,13 +62,13 @@ void setup() {
   OSCCAL = 0x6F;
   Serial.begin(9600);
 
-  Serial.println(F("Running setup"));
+  //Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
   kakuSetup();
 
   deepSleepEnabled = true;
-  Serial.println(F("Enabling deep sleep"));
+  //Serial.println(F("Enabling deep sleep"));
 
   // Setup interrupts
   *digitalPinToPCICR(RF_PIN) |= _BV(digitalPinToPCICRbit(RF_PIN)); // Enable PIN interrupts in general for RF (and buttons, because same register in ATTiny)
@@ -80,6 +80,14 @@ void setup() {
   *digitalPinToPCMSK(BTN2_PIN) |= _BV(digitalPinToPCMSKbit(BTN2_PIN)); // Enable interrupt on button 2
 
   _receivePortRegister = portInputRegister(digitalPinToPort(RF_PIN));
+
+  while(millis() < 200) { // Allow 0.2 seconds to enter kaku learning mode
+    if(buttonsReadTouch()) {
+      // If a button is pressed during start-up, enter KAKU-learning mode
+      Serial.println(F("KAKU learning"));
+      kakuLearningMode();
+    }
+  }
 
   Serial.println(F("Blink LED"));
   lightOn();
@@ -112,8 +120,8 @@ void loop() {
   uint8_t stableTouch = buttonsReadTouch();
 
   if(stableTouch != wasTouching) {
-    Serial.print("stableTouch: ");
-    Serial.println(stableTouch);
+    //Serial.print("stableTouch: ");
+    //Serial.println(stableTouch);
 
     // state change
     if(stableTouch && !wasTouching) {
@@ -136,7 +144,7 @@ void loop() {
       eeStart = millis() + 2000;
       startEe = true;
     } else if(millis() > eeStart && startEe) {
-      Serial.println("EASTER EGG MODE!");
+      Serial.println(F("EASTER EGG MODE!"));
       easterEgg();
       startEe = false;
     }
@@ -145,18 +153,9 @@ void loop() {
   }
 
   if(NewKaku.address) {
-    Serial.print(F("KaKu msg: dev: "));
-    Serial.print(NewKaku.address, DEC);
-    Serial.print(F(", unit: "));
-    Serial.print(NewKaku.unit, DEC);
-    Serial.print(F(", type: "));
-    Serial.print(NewKaku.switchType, DEC);
-    Serial.print(F(", dim: "));
-    Serial.print(NewKaku.dimLevel, DEC);
-    Serial.print(F(", group: "));
-    Serial.println(NewKaku.groupBit, DEC);
+    kakuDumpNewKaku();
 
-    if(NewKaku.address == 17517474 && NewKaku.unit == 12) {
+    if(kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
       if(NewKaku.switchType == 1) {
         lightOn();
       } else if(NewKaku.switchType == 0) {

@@ -1,6 +1,8 @@
 // Code based on "TinyKakuReceiver" https://github.com/letscontrolit/NodoClassic/tree/master/TinyKakuReceiver
 // Which is based on "NewRemoteSwitch library" made by Randy Simons http://randysimons.nl/
 
+#include "Storage.h"
+
 volatile unsigned short _state = -1;
 unsigned short _minRepeats     =  0;
 
@@ -9,10 +11,124 @@ void kakuSetup() {
   NewKaku.address = 0;
 }
 
-void NewKaku_debug() 
-{
-  Serial.print("_state: ");
-  Serial.println(_state);
+void kakuLearningMode() {
+  unsigned long learningStart = millis();
+
+  kakuEepromList();
+
+  // Wait for buttons to be released to not exit immediately
+  while(buttonsReadTouch()) {
+    // If pressing for +5 seconds, clean memory
+    if(millis() > learningStart + 5000) {
+      kakuEeprom_t memKaku;
+      memKaku.address = 0;
+      memKaku.channel = 0;
+      for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
+        eepromSave(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+      }
+      lightBlink(5);
+      while(buttonsReadTouch()) {
+        // Wait for button release
+      }
+      break;
+    }
+  }
+
+  lightBlink(2);
+
+  for(;;) {
+    if(NewKaku.address > 0 && NewKaku.switchType == 1 && !kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
+      Serial.print(F("Add "));
+      kakuDumpNewKaku();
+      kakuEepromStore(NewKaku.address, NewKaku.unit);
+      NewKaku.address = 0;
+      lightBlink(1);
+    }
+    if(NewKaku.address > 0 && NewKaku.switchType == 0 && kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
+      Serial.print(F("Delete "));
+      kakuDumpNewKaku();
+      kakuEepromPrune(NewKaku.address, NewKaku.unit);
+      NewKaku.address = 0;
+      lightBlink(1);
+    }
+    if(NewKaku.address) {
+      Serial.print(F("Unhandled Kaku: "));
+      kakuDumpNewKaku();
+      NewKaku.address = 0;
+    }
+
+    byte buttons = buttonsReadTouch();
+    //Serial.print(F("buttons: "));
+    //Serial.println(buttons, DEC);
+    if(millis() > learningStart + 3000 && buttons) {
+      Serial.println(F("Learning done"));
+      while(buttonsReadTouch()) {
+        // Wait for button release
+      }
+      break;
+    }
+  }
+}
+
+void kakuDumpNewKaku() {
+  Serial.print(F("dev: "));
+  Serial.print(NewKaku.address, DEC);
+  Serial.print(F(", unit: "));
+  Serial.print(NewKaku.unit, DEC);
+  Serial.print(F(", type: "));
+  Serial.print(NewKaku.switchType, DEC);
+  Serial.print(F(", dim: "));
+  Serial.print(NewKaku.dimLevel, DEC);
+  Serial.print(F(", group: "));
+  Serial.println(NewKaku.groupBit, DEC);
+}
+
+void kakuEepromList() {
+  kakuEeprom_t memKaku;
+  for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
+    eepromLoad(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+    Serial.print(F("dev: "));
+    Serial.print(memKaku.address, DEC);
+    Serial.print(F(", unit: "));
+    Serial.println(memKaku.channel, DEC);
+  }
+}
+
+bool kakuEepromCheck(unsigned long address, byte channel) {
+  kakuEeprom_t memKaku;
+  for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
+    eepromLoad(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+    if(memKaku.address == address && memKaku.channel == channel) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void kakuEepromStore(unsigned long address, byte channel) {
+  kakuEeprom_t memKaku;
+  for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
+    eepromLoad(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+    if(memKaku.address == 0) {
+      memKaku.address = address;
+      memKaku.channel = channel;
+      eepromSave(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+      break;
+    }
+  }
+}
+
+void kakuEepromPrune(unsigned long address, byte channel) {
+  kakuEeprom_t memKaku;
+  for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
+    eepromLoad(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+    if(memKaku.address == address && memKaku.channel == channel) {
+      memKaku.address = 0;
+      memKaku.channel = 0;
+      eepromSave(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
+      break;
+    }
+  }
 }
 
 void NewKaku_interruptHandler()
