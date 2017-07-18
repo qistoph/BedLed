@@ -1,5 +1,4 @@
 bool turnOffAtRelease = true;
-bool lightIsOn = false;
 unsigned long touchStartedAt = 0;
 
 void onTouch() {

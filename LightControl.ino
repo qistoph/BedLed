@@ -34,12 +34,13 @@ void lightOn() {
   // COM1A[1:0] -   01 - OC1A cleared on compare match, set when TCNT1 = $00. (!OC1A) set on compare match, cleared when TCNT1 = $00. (p.86)
   // CS1[3:0]   - 0010 - PCK/2 (p.88)
   TCCR1 = _BV(CTC1) | _BV(PWM1A) | 0 | _BV(COM1A0) | 0 | 0 | _BV(CS11) | 0;
-
+  lightIsOn = true;
   Serial.println(F("On"));
 }
 
 void lightOff() {
   TCCR1 = 0; // Disable timer 1
+  lightIsOn = false;
   Serial.println(F("Off"));
 }
 

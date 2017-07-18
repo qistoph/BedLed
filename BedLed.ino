@@ -55,6 +55,8 @@
 
 bool deepSleepEnabled = false;
 
+bool lightIsOn = false;
+
 volatile uint8_t *_receivePortRegister;
 
 void setup() {
@@ -144,7 +146,7 @@ void loop() {
       eeStart = millis() + 2000;
       startEe = true;
     } else if(millis() > eeStart && startEe) {
-      Serial.println(F("EASTER EGG MODE!"));
+      //Serial.println("EASTER EGG MODE!");
       easterEgg();
       startEe = false;
     }
