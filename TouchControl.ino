@@ -7,7 +7,6 @@ void onTouch() {
   if(!lightIsOn) {
     turnOffAtRelease = false;
     lightOn();
-    lightIsOn = true;
   }
 }
 
@@ -27,7 +26,6 @@ void onTouchRelease() {
   //Serial.println(turnOffAtRelease);
   if(turnOffAtRelease) {
     lightOff();
-    lightIsOn = false;
   } else {
     // turnOffAtRelease is false, because we were dimming
     // Save the current dimm level to EEPROM

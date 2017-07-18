@@ -146,7 +146,7 @@ void loop() {
       eeStart = millis() + 2000;
       startEe = true;
     } else if(millis() > eeStart && startEe) {
-      //Serial.println("EASTER EGG MODE!");
+      Serial.println("EASTER EGG MODE!");
       easterEgg();
       startEe = false;
     }

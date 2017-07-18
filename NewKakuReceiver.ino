@@ -12,14 +12,12 @@ void kakuSetup() {
 }
 
 void kakuLearningMode() {
-  unsigned long learningStart = millis();
-
   kakuEepromList();
 
   // Wait for buttons to be released to not exit immediately
   while(buttonsReadTouch()) {
     // If pressing for +5 seconds, clean memory
-    if(millis() > learningStart + 5000) {
+    if(millis() > 5000) {
       kakuEeprom_t memKaku;
       memKaku.address = 0;
       memKaku.channel = 0;
@@ -60,7 +58,7 @@ void kakuLearningMode() {
     byte buttons = buttonsReadTouch();
     //Serial.print(F("buttons: "));
     //Serial.println(buttons, DEC);
-    if(millis() > learningStart + 3000 && buttons) {
+    if(buttons) {
       Serial.println(F("Learning done"));
       while(buttonsReadTouch()) {
         // Wait for button release
