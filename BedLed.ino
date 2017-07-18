@@ -1,18 +1,16 @@
 // NOTE!!!
-// Set #undef USE_SOFTWARE_SERIAL in ATTinyCore\hardware\avr\1.1.2\variants\tinyX5\pins_arduino.h
-// Apply the FlashStringHelper-patch to ATTinyCore
-// Uses: TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial)
+// Uses:
+// ATTinyCore (https://github.com/SpenceKonde/ATTinyCore)
+// TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial)
 
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
 // Clock: 1MHz internal
 
-// LED_PIN must support PWM,
-// ATtiny85: 0 and 1. Use core from https://github.com/SpenceKonde/ATTinyCore
-
 //TODO:
 // Check datasheet page 99 for required frequency
 
+// LED_PIN must support PWM,
 #define LED_PIN 1
 #define BTN1_PIN 3
 #define BTN2_PIN 4
@@ -37,14 +35,13 @@
 
 // End of configuration
 
-#include <TinyDebugSerial.h> // 2886 -> 210
-
-//#include <SoftwareSerial.h> // 4028 -> 1352
-//#define RX 0
-//SoftwareSerial Serial(RX, TX); // RX, TX
-
-//#include "FakeSerial.h" // 2676
-//FakeSerial Serial;
+#if 1 // 1 -> Use TinyDebugSerial, 0 -> Use core Serial (+428 bytes)
+  #include <TinyDebugSerial.h>
+  TinyDebugSerial TDSerial;
+  #define MySerial TDSerial
+#else
+  #define MySerial Serial
+#endif
 
 #include "NewKakuReceiver.h"
 
@@ -61,7 +58,7 @@ volatile uint8_t *_receivePortRegister;
 void setup() {
   // put your setup code here, to run once:
   OSCCAL = 0x6F;
-  Serial.begin(9600);
+  MySerial.begin(9600);
 
   //Serial.println(F("Running setup"));
   buttonsSetup();
@@ -85,12 +82,12 @@ void setup() {
   while(millis() < 200) { // Allow 0.2 seconds to enter kaku learning mode
     if(buttonsReadTouch()) {
       // If a button is pressed during start-up, enter KAKU-learning mode
-      Serial.println(F("KAKU learning"));
+      MySerial.println(F("KAKU learning"));
       kakuLearningMode();
     }
   }
 
-  Serial.println(F("Blink LED"));
+  MySerial.println(F("Blink LED"));
   lightOn();
   delay(500);
   lightOff();
@@ -127,11 +124,11 @@ void loop() {
     // state change
     if(stableTouch && !wasTouching) {
       // Release -> Touch
-      Serial.println(F("Touch"));
+      MySerial.println(F("Touch"));
       onTouch();
     } else if(!stableTouch && wasTouching) {
       // Touch -> Release
-      Serial.println(F("Release"));
+      MySerial.println(F("Release"));
       onTouchRelease();
     }
     wasTouching = stableTouch;
@@ -145,7 +142,7 @@ void loop() {
       eeStart = millis() + 2000;
       startEe = true;
     } else if(millis() > eeStart && startEe) {
-      Serial.println("EASTER EGG MODE!");
+      MySerial.println("EASTER EGG MODE!");
       easterEgg();
       startEe = false;
     }

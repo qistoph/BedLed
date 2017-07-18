@@ -36,30 +36,30 @@ void kakuLearningMode() {
 
   for(;;) {
     if(NewKaku.address > 0 && NewKaku.switchType == 1 && !kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
-      Serial.print(F("Add "));
+      MySerial.print(F("Add "));
       kakuDumpNewKaku();
       kakuEepromStore(NewKaku.address, NewKaku.unit);
       NewKaku.address = 0;
       lightBlink(1);
     }
     if(NewKaku.address > 0 && NewKaku.switchType == 0 && kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
-      Serial.print(F("Delete "));
+      MySerial.print(F("Delete "));
       kakuDumpNewKaku();
       kakuEepromPrune(NewKaku.address, NewKaku.unit);
       NewKaku.address = 0;
       lightBlink(1);
     }
     if(NewKaku.address) {
-      Serial.print(F("Unhandled Kaku: "));
+      MySerial.print(F("Unhandled Kaku: "));
       kakuDumpNewKaku();
       NewKaku.address = 0;
     }
 
     byte buttons = buttonsReadTouch();
-    //Serial.print(F("buttons: "));
-    //Serial.println(buttons, DEC);
+    //MySerial.print(F("buttons: "));
+    //MySerial.println(buttons, DEC);
     if(buttons) {
-      Serial.println(F("Learning done"));
+      MySerial.println(F("Learning done"));
       while(buttonsReadTouch()) {
         // Wait for button release
       }
@@ -69,26 +69,26 @@ void kakuLearningMode() {
 }
 
 void kakuDumpNewKaku() {
-  Serial.print(F("dev: "));
-  Serial.print(NewKaku.address, DEC);
-  Serial.print(F(", unit: "));
-  Serial.print(NewKaku.unit, DEC);
-  Serial.print(F(", type: "));
-  Serial.print(NewKaku.switchType, DEC);
-  Serial.print(F(", dim: "));
-  Serial.print(NewKaku.dimLevel, DEC);
-  Serial.print(F(", group: "));
-  Serial.println(NewKaku.groupBit, DEC);
+  MySerial.print(F("dev: "));
+  MySerial.print(NewKaku.address, DEC);
+  MySerial.print(F(", unit: "));
+  MySerial.print(NewKaku.unit, DEC);
+  MySerial.print(F(", type: "));
+  MySerial.print(NewKaku.switchType, DEC);
+  MySerial.print(F(", dim: "));
+  MySerial.print(NewKaku.dimLevel, DEC);
+  MySerial.print(F(", group: "));
+  MySerial.println(NewKaku.groupBit, DEC);
 }
 
 void kakuEepromList() {
   kakuEeprom_t memKaku;
   for(uint8_t i = 0; i<STORAGE_KAKU_MAX_ADDRESS; ++i) {
     eepromLoad(STORAGE_KAKU_BASE_ADDR + i * sizeof(memKaku), &memKaku, sizeof(memKaku));
-    Serial.print(F("dev: "));
-    Serial.print(memKaku.address, DEC);
-    Serial.print(F(", unit: "));
-    Serial.println(memKaku.channel, DEC);
+    MySerial.print(F("dev: "));
+    MySerial.print(memKaku.address, DEC);
+    MySerial.print(F(", unit: "));
+    MySerial.println(memKaku.channel, DEC);
   }
 }
 

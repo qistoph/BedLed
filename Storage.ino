@@ -12,12 +12,12 @@ void eepromLoad(unsigned int address, void *value, size_t len) {
 void eepromSave(unsigned int address, void *value, size_t len) {
   uint8_t *data = value;
 
-  Serial.print(F("Save: "));
-  Serial.println(address, DEC);
+  MySerial.print(F("Save: "));
+  MySerial.println(address, DEC);
   for(size_t i = 0; i<len; ++i) {
-    //Serial.print(address + i, DEC);
-    //Serial.print(F(", "));
-    //Serial.println(*(data + i));
+    //MySerial.print(address + i, DEC);
+    //MySerial.print(F(", "));
+    //MySerial.println(*(data + i));
     EEPROM.write(address + i, *(data + i));
   }
 }

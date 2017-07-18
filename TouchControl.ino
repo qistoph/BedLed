@@ -22,8 +22,8 @@ void onTouching() {
 }
 
 void onTouchRelease() {
-  //Serial.print(F("turnOffAtRelease: "));
-  //Serial.println(turnOffAtRelease);
+  //MySerial.print(F("turnOffAtRelease: "));
+  //MySerial.println(turnOffAtRelease);
   if(turnOffAtRelease) {
     lightOff();
   } else {

@@ -35,13 +35,13 @@ void lightOn() {
   // CS1[3:0]   - 0010 - PCK/2 (p.88)
   TCCR1 = _BV(CTC1) | _BV(PWM1A) | 0 | _BV(COM1A0) | 0 | 0 | _BV(CS11) | 0;
   lightIsOn = true;
-  Serial.println(F("On"));
+  MySerial.println(F("On"));
 }
 
 void lightOff() {
   TCCR1 = 0; // Disable timer 1
   lightIsOn = false;
-  Serial.println(F("Off"));
+  MySerial.println(F("Off"));
 }
 
 void lightDimm() {
@@ -55,8 +55,8 @@ void lightDimm() {
     dimmLevel = dimmMax;
   }
 
-  Serial.print("dim: ");
-  Serial.println(dimmLevel);
+  MySerial.print("dim: ");
+  MySerial.println(dimmLevel);
   lightOn(); // Turn light 'on' to effectuate dimm
 }
 
