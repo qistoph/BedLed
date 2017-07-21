@@ -1,11 +1,11 @@
 // NOTE!!!
 // Uses:
-// ATTinyCore (https://github.com/SpenceKonde/ATTinyCore)
+// ATTinyCore (https://github.com/SpenceKonde/ATTinyCore) + patch for print/println(__FlashStringHelper)
 // TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial)
 
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
-// Clock: 1MHz internal
+// Clock: 8MHz internal
 
 //TODO:
 // Check datasheet page 99 for required frequency
@@ -60,13 +60,13 @@ void setup() {
   OSCCAL = 0x6F;
   MySerial.begin(9600);
 
-  //Serial.println(F("Running setup"));
+  Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
   kakuSetup();
 
   deepSleepEnabled = true;
-  //Serial.println(F("Enabling deep sleep"));
+  MySerial.println(F("Enabling deep sleep")); // Not really useful if using RF though
 
   // Setup interrupts
   *digitalPinToPCICR(RF_PIN) |= _BV(digitalPinToPCICRbit(RF_PIN)); // Enable PIN interrupts in general for RF (and buttons, because same register in ATTiny)
