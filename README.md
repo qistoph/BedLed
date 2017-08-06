@@ -5,6 +5,8 @@
 
 ![PCB](schema/BedLed_pcb.png)
 
+Also available on [Aisler](https://aisler.net/qistoph/bedled/)
+
 ## Parts
 - D1 - Skottky diode (20V, 3A)
 - C1 - 16V, 0.33µF
