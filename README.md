@@ -15,11 +15,12 @@ Also available on [Aisler](https://aisler.net/qistoph/bedled/)
 - Q1 - IRFZ44N
 - U1 - ATtiny85
 - J1 - 2 pin haeder with jumper
-- J2 - 2x3 pin ICSP header (optional)
 - Power supply socket
 - Terminals for button and LED connections
 - Buttons
+
 Optional:
+- J2 - 2x3 pin ICSP header (optional)
 - RF expansion (e.g. 433 MHz receiver)
 - Reset button (with 2-pin connector)
 
