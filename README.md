@@ -3,6 +3,23 @@
 ## Video
 [![BedLed in action](https://img.youtube.com/vi/FOfo3qLnq14/0.jpg)](https://www.youtube.com/watch?v=FOfo3qLnq14)
 
+In this video you see the switches I've chosen. These are [5V metal momentary switches](https://www.aliexpress.com/snapshot/0.html?spm=a2g0s.9042647.0.0.nO2JPc&orderId=84821251020941&productId=32697109472) along with [a socket](https://www.aliexpress.com/snapshot/0.html?spm=a2g0s.9042647.0.0.nO2JPc&orderId=84821251030941&productId=32811846605).
+
+These switches have 5 pins, with the following colors attached on the socket:
+1. Red - LED Source (+)
+2. Black - LED Ground (-)
+3. White - Normally Open (NO)
+4. Green - Common (C)
+5. Blue - Normally Closed (NC)
+
+![Schema](schema/BedLed_button_schema.png)
+
+When the button is released NC is connected to C and NO is not connected.
+When the button is pressed NO is connected to C and NC is not connected.
+
+I have connected + to 5V, - to NC, NO to my button pin, C to ground. So when the button is not pressed, current flows from - through NC, to C, to ground, connecting the LED - to ground.
+When the button is pressed, the LED flow is interrupted and the LED turns of (signaling the user a confirmation of the pressing). The button pin on the ATtiny is then connected through NO to ground.
+
 ## Schema
 ![Schema](schema/BedLed_schem.png)
 
