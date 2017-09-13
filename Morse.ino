@@ -6,13 +6,13 @@
 void easterEgg() {
   lightOff();
   wsp();
-  dah();dit();dah();dit();dah(); // Starting signal
+  dah();dit();dah();dit();dah(); // Starting signal: -.-.-
   wsp();
-  dah();dit();dah();dit(); // C
+  dah();dit();dah();dit(); // C: -.-.
   lsp();
-  dit();dit();dit();dah();dah(); // 3
+  dit();dit();dit();dah();dah(); // 3: ...--
   lsp();
-  dah();dah(); // M
+  dah();dah(); // M: --
   wsp();
 
   lightOn();
@@ -32,10 +32,12 @@ void dah() {
   delay(MDT);
 }
 
+// Letter space
 void lsp() {
   delay(MLS);
 }
 
+// Word space
 void wsp() {
   delay(MWS);
 }

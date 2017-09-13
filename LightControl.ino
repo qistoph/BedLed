@@ -1,12 +1,13 @@
 #include "Storage.h"
 
-int dimmLevel = dimmMax;
+uint16_t dimmLevels[] = {8, 16, 32, 64, 128, 255, 0};
+int dimmLevel = 8;
 
 void lightSetup() {
   pinMode(LED_PIN, OUTPUT);
   eepromLoad(STORAGE_DIMM_ADDRESS, &dimmLevel, sizeof(dimmLevel));
-  if(dimmLevel < dimmMin) {
-    dimmLevel = dimmMin;
+  if(dimmLevel < dimmLevels[0]) {
+    dimmLevel = dimmLevels[0];
   }
 }
 
@@ -26,7 +27,7 @@ void lightOn() {
   while (!(PLLCSR & (1<<PLOCK))); //Wait for PLL lock
   PLLCSR |= _BV(PCKE); // Use PLL as clock source
 
-  OCR1C = dimmMax - 1;
+  OCR1C = 255 - 1;
   OCR1A = dimmLevel;
 
   // CTC1       -    1 - Reset timer after compare match with OCR1C (p.89)
@@ -45,19 +46,35 @@ void lightOff() {
 }
 
 void lightDimm() {
-  if(dimmLevel >= dimmMax) {
-    dimmLevel = dimmMin;
-  } else {
-    dimmLevel = dimmLevel * 2;
+  int n = 0;
+  for(;;++n) {
+    if(dimmLevels[n] == 0) {
+      // No match
+      dimmLevel = dimmLevels[0];
+      break;
+    } else if(dimmLevel < dimmLevels[n]) {
+      dimmLevel = dimmLevels[n];
+      break;
+    }
   }
   
-  if(dimmLevel > dimmMax) {
-    dimmLevel = dimmMax;
-  }
-
   MySerial.print("dim: ");
   MySerial.println(dimmLevel);
   lightOn(); // Turn light 'on' to effectuate dimm
+}
+
+void kakuDimm(unsigned short kakuDim) {
+  kakuDim <<= 4;
+  if(kakuDim == 0) {
+    lightOff();
+  } else {
+    if(kakuDim > 240) {
+      //Highest possible 4-bit value: full on
+      kakuDim = 255;
+    }
+    dimmLevel = kakuDim;
+    lightOn();
+  }
 }
 
 void lightBlink(uint8_t count) {

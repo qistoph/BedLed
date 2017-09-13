@@ -25,14 +25,6 @@
 #define DIMM_TIMEOUT 1000
 #define DIMM_STEP_TIME 500
 
-// Dimm settings
-// dimmMin: minimum dimm level (as written to OCR1A
-// dimmStep: increase per dimm step
-// dimmMax: value at which the dimm level is reset to dimmMin
-#define dimmMin 8
-#define dimmStep 20
-#define dimmMax 255
-
 // End of configuration
 
 #if 1 // 1 -> Use TinyDebugSerial, 0 -> Use core Serial (+428 bytes)
@@ -49,7 +41,7 @@
 #define SIGRD RSIG
 #endif
 
-bool deepSleepEnabled = false;
+bool deepSleepEnabled = true;
 
 bool lightIsOn = false;
 
@@ -64,9 +56,6 @@ void setup() {
   buttonsSetup();
   lightSetup();
   kakuSetup();
-
-  deepSleepEnabled = true;
-  MySerial.println(F("Enabling deep sleep")); // Not really useful if using RF though
 
   // Setup interrupts
   *digitalPinToPCICR(RF_PIN) |= _BV(digitalPinToPCICRbit(RF_PIN)); // Enable PIN interrupts in general for RF (and buttons, because same register in ATTiny)
@@ -158,6 +147,8 @@ void loop() {
         lightOn();
       } else if(NewKaku.switchType == 0) {
         lightOff();
+      } else if(NewKaku.switchType == 2) {
+        kakuDimm(NewKaku.dimLevel);
       }
     }
 
@@ -175,3 +166,4 @@ void loop() {
     sleepAt = millis() + 100; // Allow at least 100ms to detect button presses before sleeping again
   }
 }
+
