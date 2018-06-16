@@ -155,6 +155,8 @@ void loop() {
     NewKaku.address = 0;
   }
 
+  touchLoop();
+
 //  Serial.print(F("lightIsOn: "));
 //  Serial.println(lightIsOn);
 //  Serial.print(F("stableTouch: "));

@@ -63,6 +63,11 @@ void lightDimm() {
   lightOn(); // Turn light 'on' to effectuate dimm
 }
 
+void lightSetDimm(int dimm) {
+  dimmLevel = dimm;
+  lightOn(); // Turn light 'on' to effectuate dimm
+}
+
 void kakuDimm(unsigned short kakuDim) {
   kakuDim <<= 4;
   if(kakuDim == 0) {

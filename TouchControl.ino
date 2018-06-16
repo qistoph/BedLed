@@ -4,10 +4,13 @@
 
 byte releaseAction = RELEASE_OFF;
 unsigned long touchStartedAt = 0;
+bool easterEggActive = 0;
 
 void onTouch() {
   touchStartedAt = millis();
   releaseAction = RELEASE_OFF;
+  easterEggActive = 0;
+
   if(!lightIsOn) {
     releaseAction = RELEASE_NONE;
     lightOn();
@@ -45,5 +48,16 @@ void onTouchRelease() {
     default:
       MySerial.println(F(" (Unknown)"));
       break;
+  }
+}
+
+void easterEgg() {
+  releaseAction = RELEASE_NONE;
+  easterEggActive = 1;
+}
+
+void touchLoop() {
+  if(easterEggActive) {
+    lightBreathe();
   }
 }
