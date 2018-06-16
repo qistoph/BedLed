@@ -58,7 +58,7 @@ void lightDimm() {
     }
   }
   
-  MySerial.print("dim: ");
+  MySerial.print(F("dim: "));
   MySerial.println(dimmLevel);
   lightOn(); // Turn light 'on' to effectuate dimm
 }
