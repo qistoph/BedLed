@@ -34,7 +34,7 @@ Also available on [Aisler](https://aisler.net/qistoph/bedled/main-pcb)
 - IC2 - LM7805
 - Q1 - IRFZ44N
 - U1 - ATtiny85
-- J1 - 2 pin haeder with jumper
+- J1 - 2 pin header with jumper
 - Power supply socket
 - Terminals for button and LED connections
 - Buttons
