@@ -1,6 +1,7 @@
 #include "Storage.h"
 
-uint16_t dimmLevels[] = {8, 16, 32, 64, 128, 255, 0};
+// ZERO terminated list of available dimmLevels
+int dimmLevels[] = {8, 16, 32, 64, 128, 255};
 int dimmLevel = 8;
 
 void lightSetup() {
@@ -45,16 +46,24 @@ void lightOff() {
   MySerial.println(F("Off"));
 }
 
+byte delayAtMaxCounter = 0;
 void lightDimm() {
-  int n = 0;
-  for(;;++n) {
-    if(dimmLevels[n] == 0) {
-      // No match
-      dimmLevel = dimmLevels[0];
-      break;
-    } else if(dimmLevel < dimmLevels[n]) {
-      dimmLevel = dimmLevels[n];
-      break;
+  if(dimmLevel == dimmLevels[sizeof(dimmLevels) - 1]) {
+    // Current value is the last one
+    // Delay a little
+    if(delayAtMaxCounter > 0) {
+      delayAtMaxCounter--;
+      return;
+    }
+
+    delayAtMaxCounter = 2;
+    dimmLevel = dimmLevels[0];
+  } else {
+    for(uint8_t n=0; n<sizeof(dimmLevels); ++n) {
+      if(dimmLevel < dimmLevels[n]) {
+        dimmLevel = dimmLevels[n];
+        break;
+      }
     }
   }
   
@@ -66,20 +75,6 @@ void lightDimm() {
 void lightSetDimm(int dimm) {
   dimmLevel = dimm;
   lightOn(); // Turn light 'on' to effectuate dimm
-}
-
-void kakuDimm(unsigned short kakuDim) {
-  kakuDim <<= 4;
-  if(kakuDim == 0) {
-    lightOff();
-  } else {
-    if(kakuDim > 240) {
-      //Highest possible 4-bit value: full on
-      kakuDim = 255;
-    }
-    dimmLevel = kakuDim;
-    lightOn();
-  }
 }
 
 void lightBlink(uint8_t count) {

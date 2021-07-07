@@ -14,7 +14,6 @@
 #define LED_PIN 1
 #define BTN1_PIN 3
 #define BTN2_PIN 4
-#define RF_PIN 0
 #define TX 2 // As used hardcoded by TinyDebugSerial
 
 // Times are in ms
@@ -35,8 +34,6 @@
   #define MySerial Serial
 #endif
 
-#include "NewKakuReceiver.h"
-
 #ifndef SIGRD // used in boot.h by boot_signature_byte_get_short(addr)
 #define SIGRD RSIG
 #endif
@@ -44,8 +41,6 @@
 bool deepSleepEnabled = true;
 
 bool lightIsOn = false;
-
-volatile uint8_t *_receivePortRegister;
 
 void setup() {
   // put your setup code here, to run once:
@@ -55,26 +50,13 @@ void setup() {
   Serial.println(F("Running setup"));
   buttonsSetup();
   lightSetup();
-  kakuSetup();
 
   // Setup interrupts
-  *digitalPinToPCICR(RF_PIN) |= _BV(digitalPinToPCICRbit(RF_PIN)); // Enable PIN interrupts in general for RF (and buttons, because same register in ATTiny)
-  *digitalPinToPCICR(BTN1_PIN) |= _BV(digitalPinToPCICRbit(BTN1_PIN)); //TODO: remove?
-  *digitalPinToPCICR(BTN2_PIN) |= _BV(digitalPinToPCICRbit(BTN2_PIN)); //TODO: remove?
+  *digitalPinToPCICR(BTN1_PIN) |= _BV(digitalPinToPCICRbit(BTN1_PIN)); // Enable PIN interrupts in general and btn1 pin
+  *digitalPinToPCICR(BTN2_PIN) |= _BV(digitalPinToPCICRbit(BTN2_PIN)); //TODO: remove? (because same register in ATTiny)
 
-  *digitalPinToPCMSK(RF_PIN) |= _BV(digitalPinToPCMSKbit(RF_PIN)); // Enable interrupt on RF
   *digitalPinToPCMSK(BTN1_PIN) |= _BV(digitalPinToPCMSKbit(BTN1_PIN)); // Enable interrupt on button 1
   *digitalPinToPCMSK(BTN2_PIN) |= _BV(digitalPinToPCMSKbit(BTN2_PIN)); // Enable interrupt on button 2
-
-  _receivePortRegister = portInputRegister(digitalPinToPort(RF_PIN));
-
-  while(millis() < 200) { // Allow 0.2 seconds to enter kaku learning mode
-    if(buttonsReadTouch()) {
-      // If a button is pressed during start-up, enter KAKU-learning mode
-      MySerial.println(F("KAKU learning"));
-      kakuLearningMode();
-    }
-  }
 
   MySerial.println(F("Blink LED"));
   lightOn();
@@ -91,14 +73,7 @@ bool startEe = false;
 extern bool lightIsOn;
 
 // Interrupt handler, called for button and RF interrupts
-byte volatile RFState =  0;
 ISR(PCINT0_vect) {
-  byte portstate= *_receivePortRegister & _BV(RF_PIN);
-  if (RFState != portstate)
-  {
-    RFState = portstate;
-    NewKaku_interruptHandler();
-  }
 }
 
 void loop() {
@@ -139,22 +114,6 @@ void loop() {
     eeStart = 0;
   }
 
-  if(NewKaku.address) {
-    kakuDumpNewKaku();
-
-    if(kakuEepromCheck(NewKaku.address, NewKaku.unit)) {
-      if(NewKaku.switchType == 1) {
-        lightOn();
-      } else if(NewKaku.switchType == 0) {
-        lightOff();
-      } else if(NewKaku.switchType == 2) {
-        kakuDimm(NewKaku.dimLevel);
-      }
-    }
-
-    NewKaku.address = 0;
-  }
-
   touchLoop();
 
 //  Serial.print(F("lightIsOn: "));
@@ -168,4 +127,3 @@ void loop() {
     sleepAt = millis() + 100; // Allow at least 100ms to detect button presses before sleeping again
   }
 }
-

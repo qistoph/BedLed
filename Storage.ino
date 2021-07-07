@@ -3,14 +3,14 @@
 #include <EEPROM.h>
 
 void eepromLoad(unsigned int address, void *value, size_t len) {
-  uint8_t *data = value;
+  uint8_t *data = (uint8_t*)value;
   for(size_t i = 0; i<len; ++i) {
     *(data + i) = EEPROM.read(address + i);
   }
 }
 
 void eepromSave(unsigned int address, void *value, size_t len) {
-  uint8_t *data = value;
+  uint8_t *data = (uint8_t*)value;
 
   MySerial.print(F("Save: "));
   MySerial.println(address, DEC);
@@ -21,5 +21,3 @@ void eepromSave(unsigned int address, void *value, size_t len) {
     EEPROM.write(address + i, *(data + i));
   }
 }
-
-
