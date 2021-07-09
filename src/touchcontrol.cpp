@@ -8,13 +8,17 @@ unsigned long touchStartedAt = 0;
 #define MODE_NORMAL 0
 #define MODE_BRIGHT 1
 #define MODE_BREATH 2
-#define NUM_MODES   3
+#define MODE_STROBE 3
+#define MODE_HORROR 4
+#define NUM_MODES   5
 
 byte mode = MODE_NORMAL;
 
 void onTouch() {
   touchStartedAt = millis();
   releaseAction = RELEASE_CLICK;
+
+  randomSeed(analogRead(0));
 }
 
 void onTouching() {
@@ -35,6 +39,28 @@ void onTouching() {
 
         // Hack: set touchStartedAt so that after DIMM_STEP_TIME the DIMM_TIMEOUT is reached again
         // triggering this if() every DIMM_STEP_TIME ms
+        touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
+      }
+      break;
+    case MODE_STROBE:
+      if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
+        if(strobe_freq_hz < 10) {
+          strobe_freq_hz = 10;
+        } else if(strobe_freq_hz < 20) {
+          strobe_freq_hz = 20;
+        } else if(strobe_freq_hz < 30) {
+          strobe_freq_hz = 30;
+        } else if (strobe_freq_hz < 40) {
+          strobe_freq_hz = 40;
+        } else {
+          strobe_freq_hz = 5;
+        }
+        
+        MySerial.print(F("Strobe freq (Hz): "));
+        MySerial.println(strobe_freq_hz);
+
+        releaseAction = RELEASE_SKIP;
+
         touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
       }
       break;
@@ -100,6 +126,12 @@ void touchLoop() {
   switch(mode) {
     case MODE_BREATH:
       lightBreathe();
+      break;
+    case MODE_STROBE:
+      lightStrobe();
+      break;
+    case MODE_HORROR:
+      lightHorror();
       break;
   }
 }

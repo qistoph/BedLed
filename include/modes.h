@@ -5,4 +5,9 @@
 
 void lightBreathe();
 
+extern byte strobe_freq_hz;
+void lightStrobe();
+
+void lightHorror();
+
 #endif
