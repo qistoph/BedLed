@@ -6,7 +6,9 @@ byte releaseAction = RELEASE_CLICK;
 unsigned long touchStartedAt = 0;
 
 #define MODE_NORMAL 0
-#define MODE_BREATH 1
+#define MODE_BRIGHT 1
+#define MODE_BREATH 2
+#define NUM_MODES   3
 
 byte mode = MODE_NORMAL;
 
@@ -18,6 +20,7 @@ void onTouch() {
 void onTouching() {
   switch(mode) {
     case MODE_NORMAL:
+    case MODE_BRIGHT:
       if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
         if(!lightIsOn) {
           MySerial.println(F("Dimmed on"));
@@ -38,6 +41,19 @@ void onTouching() {
   }
 }
 
+void nextMode() {
+  mode = (mode + 1) % NUM_MODES;
+  MySerial.print(F("Mode: "));
+  MySerial.println(mode);
+
+  switch (mode)
+  {
+    case MODE_BRIGHT:
+        lightSetDimm(dimmLevelMax);
+      break;
+  }
+}
+
 unsigned long lastClick = 0;
 
 void onTouchRelease() {
@@ -50,11 +66,11 @@ void onTouchRelease() {
 
       if (lightIsOn) {
         if (millis() - lastClick < DOUBLE_CLICK_TIME) {
-          lightSetDimm(dimmLevelMax);
+          nextMode();
         } else {
           lightOff();
+          mode = MODE_NORMAL;
         }
-        mode = MODE_NORMAL;
       } else {
         lightOn();
       }
