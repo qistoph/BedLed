@@ -4,30 +4,37 @@
 
 byte releaseAction = RELEASE_CLICK;
 unsigned long touchStartedAt = 0;
-bool easterEggActive = 0;
+
+#define MODE_NORMAL 0
+#define MODE_BREATH 1
+
+byte mode = MODE_NORMAL;
 
 void onTouch() {
   touchStartedAt = millis();
-  easterEggActive = 0;
   releaseAction = RELEASE_CLICK;
 }
 
 void onTouching() {
-  if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
-    if(!lightIsOn) {
-      MySerial.println(F("Dimmed on"));
-      lightSetDimm(dimmLevelMin);
-      lightOn();
-    } else {
-      MySerial.println(F("Dimming"));
-      lightDimm();
-    }
-    
-    releaseAction = RELEASE_HOLD;
+  switch(mode) {
+    case MODE_NORMAL:
+      if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
+        if(!lightIsOn) {
+          MySerial.println(F("Dimmed on"));
+          lightSetDimm(dimmLevelMin);
+          lightOn();
+        } else {
+          MySerial.println(F("Dimming"));
+          lightDimm();
+        }
+        
+        releaseAction = RELEASE_HOLD;
 
-    // Hack: set touchStartedAt so that after DIMM_STEP_TIME the DIMM_TIMEOUT is reached again
-    // triggering this if() every DIMM_STEP_TIME ms
-    touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
+        // Hack: set touchStartedAt so that after DIMM_STEP_TIME the DIMM_TIMEOUT is reached again
+        // triggering this if() every DIMM_STEP_TIME ms
+        touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
+      }
+      break;
   }
 }
 
@@ -40,6 +47,7 @@ void onTouchRelease() {
       MySerial.println(F(" (RELEASE_CLICK)"));
       if (lightIsOn) {
         lightOff();
+        mode = MODE_NORMAL;
       } else {
         lightOn();
       }
@@ -60,11 +68,13 @@ void onTouchRelease() {
 
 void easterEgg() {
   releaseAction = RELEASE_SKIP;
-  easterEggActive = 1;
+  mode = MODE_BREATH;
 }
 
 void touchLoop() {
-  if(easterEggActive) {
-    lightBreathe();
+  switch(mode) {
+    case MODE_BREATH:
+      lightBreathe();
+      break;
   }
 }
