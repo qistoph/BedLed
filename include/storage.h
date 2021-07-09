@@ -1,6 +1,8 @@
 #ifndef _STORAGE_H_
 #define _STORAGE_H_
 
+#include <Arduino.h>
+
 #define STORAGE_DIMM_ADDRESS 0
 // sizeof(simLevel) == sizeof(int) == 2
 

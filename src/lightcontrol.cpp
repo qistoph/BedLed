@@ -1,8 +1,10 @@
-#include "Storage.h"
+#include "lightcontrol.h"
 
 // ZERO terminated list of available dimmLevels
 int dimmLevels[] = {8, 16, 32, 64, 128, 255};
 int dimmLevel = 8;
+
+bool lightIsOn = false;
 
 void lightSetup() {
   pinMode(LED_PIN, OUTPUT);
@@ -48,6 +50,11 @@ void lightOff() {
 
 byte delayAtMaxCounter = 0;
 void lightDimm() {
+  MySerial.print(F("dim before: "));
+  MySerial.println(dimmLevel);
+  MySerial.print(F("levels: "));
+  MySerial.println(sizeof(dimmLevels));
+  
   if(dimmLevel == dimmLevels[sizeof(dimmLevels) - 1]) {
     // Current value is the last one
     // Delay a little

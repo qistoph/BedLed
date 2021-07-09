@@ -1,4 +1,7 @@
 #include <avr/sleep.h>
+#include <avr/interrupt.h>
+
+#include "sleep.h"
 
 void deepSleep() {
   //MySerial.print(F("Going to sleep at "));

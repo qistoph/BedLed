@@ -1,3 +1,5 @@
+#include "buttons.h"
+
 void buttonsSetup() {
   pinMode(BTN1_PIN, INPUT_PULLUP);
   pinMode(BTN2_PIN, INPUT_PULLUP);

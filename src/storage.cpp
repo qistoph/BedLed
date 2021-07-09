@@ -1,4 +1,5 @@
-#include "Storage.h"
+#include "storage.h"
+#include "settings.h"
 
 #include <EEPROM.h>
 

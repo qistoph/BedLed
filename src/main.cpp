@@ -10,41 +10,24 @@
 //TODO:
 // Check datasheet page 99 for required frequency
 
-// LED_PIN must support PWM,
-#define LED_PIN 1
-#define BTN1_PIN 3
-#define BTN2_PIN 4
-#define TX 2 // As used hardcoded by TinyDebugSerial
-
-// Times are in ms
-// DEBOUNCE_DELAY: time to allow jitter on a button before accepting its new state
-// DIMM_TIMEOUT:   time to wait, after pressing a button, before starting to dimm
-// DIMM_STEP_TIME: time between stepping to the next dimm level
-#define DEBOUNCE_DELAY 20
-#define DIMM_TIMEOUT 1000
-#define DIMM_STEP_TIME 500
-
-// End of configuration
-
-#if 1 // 1 -> Use TinyDebugSerial, 0 -> Use core Serial (+428 bytes)
-  #include <TinyDebugSerial.h>
-  TinyDebugSerial TDSerial;
-  #define MySerial TDSerial
-#else
-  #define MySerial Serial
-#endif
+#include <Arduino.h>
+#include "settings.h"
+#include "buttons.h"
+#include "lightcontrol.h"
+#include "touchcontrol.h"
+#include "sleep.h"
 
 #ifndef SIGRD // used in boot.h by boot_signature_byte_get_short(addr)
 #define SIGRD RSIG
 #endif
 
-bool deepSleepEnabled = true;
+TinyDebugSerial TDSerial;
 
-bool lightIsOn = false;
+bool deepSleepEnabled = true;
 
 void setup() {
   // put your setup code here, to run once:
-  OSCCAL = 0x6F;
+  OSCCAL = 0x58;
   MySerial.begin(9600);
 
   Serial.println(F("Running setup"));

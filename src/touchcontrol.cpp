@@ -1,6 +1,6 @@
-#define RELEASE_OFF 0
-#define RELEASE_SAVE 1
-#define RELEASE_NONE 2
+#include "touchcontrol.h"
+#include "lightcontrol.h"
+#include "modes.h"
 
 byte releaseAction = RELEASE_OFF;
 unsigned long touchStartedAt = 0;
