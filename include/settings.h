@@ -14,7 +14,7 @@
 // DIMM_TIMEOUT:   time to wait, after pressing a button, before starting to dimm
 // DIMM_STEP_TIME: time between stepping to the next dimm level
 #define DEBOUNCE_DELAY 20
-#define DIMM_TIMEOUT 1000
+#define DIMM_TIMEOUT 500
 #define DIMM_STEP_TIME 500
 
 #if 1 // 1 -> Use TinyDebugSerial, 0 -> Use core Serial (+428 bytes)

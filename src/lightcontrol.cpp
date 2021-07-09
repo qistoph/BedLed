@@ -1,8 +1,8 @@
 #include "lightcontrol.h"
 
-// ZERO terminated list of available dimmLevels
-byte dimmLevels[] = {8, 16, 32, 64, 128, 255};
-byte dimmLevel = 8;
+byte dimmLevels[] = {1, 8, 16, 32, 64, 128, 255};
+byte dimmLevelMin = dimmLevels[0];
+byte dimmLevel = dimmLevelMin;
 
 bool lightIsOn = false;
 
@@ -81,7 +81,6 @@ void lightDimm() {
 
 void lightSetDimm(int dimm) {
   dimmLevel = dimm;
-  lightOn(); // Turn light 'on' to effectuate dimm
 }
 
 void lightBlink(uint8_t count) {

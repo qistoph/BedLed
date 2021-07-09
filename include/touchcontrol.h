@@ -3,9 +3,9 @@
 
 #include <Arduino.h>
 
-#define RELEASE_OFF 0
-#define RELEASE_SAVE 1
-#define RELEASE_NONE 2
+#define RELEASE_CLICK 0
+#define RELEASE_HOLD 2
+#define RELEASE_SKIP 3
 
 void onTouch();
 

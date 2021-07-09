@@ -5,6 +5,7 @@
 #include "storage.h"
 
 extern bool lightIsOn;
+extern byte dimmLevelMin;
 
 void lightSetup();
 

@@ -105,7 +105,7 @@ void loop() {
 //  Serial.println(stableTouch);
 //  Serial.print(F("deepSleepEnabled: "));
 //  Serial.println(deepSleepEnabled);
-  if(!lightIsOn && millis() > sleepAt && deepSleepEnabled) {
+  if(!lightIsOn && !stableTouch && millis() > sleepAt && deepSleepEnabled) {
     deepSleep();
     sleepAt = millis() + 100; // Allow at least 100ms to detect button presses before sleeping again
   }
