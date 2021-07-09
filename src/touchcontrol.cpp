@@ -38,6 +38,8 @@ void onTouching() {
   }
 }
 
+unsigned long lastClick = 0;
+
 void onTouchRelease() {
   MySerial.print(F("releaseAction: "));
   MySerial.print(releaseAction);
@@ -45,12 +47,19 @@ void onTouchRelease() {
   switch(releaseAction) {
     case RELEASE_CLICK:
       MySerial.println(F(" (RELEASE_CLICK)"));
+
       if (lightIsOn) {
-        lightOff();
+        if (millis() - lastClick < DOUBLE_CLICK_TIME) {
+          lightSetDimm(dimmLevelMax);
+        } else {
+          lightOff();
+        }
         mode = MODE_NORMAL;
       } else {
         lightOn();
       }
+
+      lastClick = millis();
       break;
     case RELEASE_HOLD:
       MySerial.println(F(" (RELEASE_HOLD)"));

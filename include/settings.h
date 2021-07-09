@@ -10,12 +10,14 @@
 #define TX 2 // As used hardcoded by TinyDebugSerial
 
 // Times are in ms
-// DEBOUNCE_DELAY: time to allow jitter on a button before accepting its new state
-// DIMM_TIMEOUT:   time to wait, after pressing a button, before starting to dimm
-// DIMM_STEP_TIME: time between stepping to the next dimm level
+// DEBOUNCE_DELAY:    time to allow jitter on a button before accepting its new state
+// DIMM_TIMEOUT:      time to wait, after pressing a button, before starting to dimm
+// DIMM_STEP_TIME:    time between stepping to the next dimm level
+// DOUBLE_CLICK_TIME: max time between clicks to be considered a double click
 #define DEBOUNCE_DELAY 20
 #define DIMM_TIMEOUT 500
 #define DIMM_STEP_TIME 500
+#define DOUBLE_CLICK_TIME 400
 
 #if 1 // 1 -> Use TinyDebugSerial, 0 -> Use core Serial (+428 bytes)
   #include <TinyDebugSerial.h>

@@ -2,6 +2,7 @@
 
 byte dimmLevels[] = {1, 8, 16, 32, 64, 128, 255};
 byte dimmLevelMin = dimmLevels[0];
+byte dimmLevelMax = dimmLevels[sizeof(dimmLevels) - 1];
 byte dimmLevel = dimmLevelMin;
 
 bool lightIsOn = false;
@@ -55,7 +56,7 @@ void lightDimm() {
   MySerial.print(F("levels: "));
   MySerial.println(sizeof(dimmLevels));
 
-  if(dimmLevel == dimmLevels[sizeof(dimmLevels) - 1]) {
+  if(dimmLevel == dimmLevelMax) {
     // Current value is the last one
     // Delay a little
     if(delayAtMaxCounter > 0) {

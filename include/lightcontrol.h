@@ -6,6 +6,7 @@
 
 extern bool lightIsOn;
 extern byte dimmLevelMin;
+extern byte dimmLevelMax;
 
 void lightSetup();
 
