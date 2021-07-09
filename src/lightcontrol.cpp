@@ -81,6 +81,7 @@ void lightDimm() {
 
 void lightSetDimm(int dimm) {
   dimmLevel = dimm;
+  OCR1A = dimmLevel;
 }
 
 void lightBlink(uint8_t count) {
