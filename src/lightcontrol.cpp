@@ -49,7 +49,6 @@ void lightOff() {
   MySerial.println(F("Off"));
 }
 
-byte delayAtMaxCounter = 0;
 void lightDimm() {
   MySerial.print(F("dim before: "));
   MySerial.println(dimmLevel);
@@ -57,14 +56,6 @@ void lightDimm() {
   MySerial.println(sizeof(dimmLevels));
 
   if(dimmLevel == dimmLevelMax) {
-    // Current value is the last one
-    // Delay a little
-    if(delayAtMaxCounter > 0) {
-      delayAtMaxCounter--;
-      return;
-    }
-
-    delayAtMaxCounter = 2;
     dimmLevel = dimmLevels[0];
   } else {
     for(uint8_t n=0; n<sizeof(dimmLevels); ++n) {
