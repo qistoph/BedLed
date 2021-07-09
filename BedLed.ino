@@ -1,7 +1,7 @@
 // NOTE!!!
 // Uses:
-// ATTinyCore (https://github.com/SpenceKonde/ATTinyCore) + patch for print/println(__FlashStringHelper)
-// TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial)
+// ATTinyCore (https://github.com/SpenceKonde/ATTinyCore)
+// TinyDebugSerial (https://github.com/qistoph/TinyDebugSerial) + modified to use PB2 on F_CPU<=8MHz
 
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
