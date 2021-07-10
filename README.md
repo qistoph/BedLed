@@ -74,15 +74,13 @@ To prevent interruptions and blinking the LED strip during flashing:
 - Disconnect the MOSFET by removing the jumper on J1 (freeing pin 6 - MISO)
 - Remove the RF expansion (freeing pin 5 - MOSI)
 
-## RF (KlikAaanKlikUit)
-### Learning mode
-To enter the learning mode, hold one of the buttons and press reset. Then release the button. The light will blink twice.
+## Version 2
+After years of use I've made some software improvements in version 2.
 
-The chip will store 5 addresses.
-Pressing the "on" button will add the address, if it's not already added. The light will blink to confirm the action.
-Pressing the "off" button will remove the address, if it's a known address. The light will blink to confirm the action.
+The KlikAaanKlikUit module and code is removed. I've never managed to get a remote to work from more than half a meter away and have given up on it.
 
-The exit learning mode, press a wired button once. The light will blink once.
+In the dark we sometimes would like to turn on the light, but really dimm. To enable this I have added an even dimmer setting (1/255 PWM). Additionally if the button is held while turning on, it turns on with the dimmest option.
 
-### Clear all addresses
-To earase all learned addresses from memory. Press and hold a button, then reset and keep holding the button until the light blinks 5 times (about 5 seconds). Release the button. The regular learning mode (with an empty memory) is now initiated.
+To quickly turn on the brightest a simple double click will suffice.
+
+Additional clicks immediately after turning on will cycle through other modes.
