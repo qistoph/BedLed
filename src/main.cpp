@@ -6,6 +6,7 @@
 // Fuse/Core config:
 // Timer 1 Clock: 64MHz
 // Clock: 8MHz internal
+// E:FF H:D7 L:E2
 
 //TODO:
 // Check datasheet page 99 for required frequency
