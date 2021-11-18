@@ -1,6 +1,7 @@
 #include "touchcontrol.h"
 #include "lightcontrol.h"
 #include "modes.h"
+#include "quake.h"
 
 byte releaseAction = RELEASE_CLICK;
 unsigned long touchStartedAt = 0;
@@ -10,7 +11,8 @@ unsigned long touchStartedAt = 0;
 #define MODE_BREATH 2
 #define MODE_STROBE 3
 #define MODE_HORROR 4
-#define NUM_MODES   5
+#define MODE_QUAKE  5
+#define NUM_MODES   6
 
 byte mode = MODE_NORMAL;
 
@@ -64,6 +66,16 @@ void onTouching() {
         touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
       }
       break;
+    case MODE_QUAKE:
+      if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
+        uint8_t quake_mode = nextQuake();
+
+        MySerial.print(F("Quak mode: "));
+        MySerial.println(quake_mode);
+
+        releaseAction = RELEASE_SKIP;
+        touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
+      }
   }
 }
 
@@ -132,6 +144,9 @@ void touchLoop() {
       break;
     case MODE_HORROR:
       lightHorror();
+      break;
+    case MODE_QUAKE:
+      lightQuake();
       break;
   }
 }
