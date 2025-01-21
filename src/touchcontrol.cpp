@@ -76,6 +76,13 @@ void onTouching() {
         releaseAction = RELEASE_SKIP;
         touchStartedAt = millis() - (DIMM_TIMEOUT - DIMM_STEP_TIME);
       }
+      break;
+    default:
+      // Nothing special, but hold should not turn off the light
+      if(millis() > (touchStartedAt + DIMM_TIMEOUT)) {
+        releaseAction = RELEASE_SKIP;
+      }
+      break;
   }
 }
 
