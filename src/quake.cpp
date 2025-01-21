@@ -68,6 +68,8 @@ uint8_t nextQuake() {
 	quake_seq_l = strlen_P(quake_seq_addr);
 	MySerial.print(F("Quake len: "));
 	MySerial.println(quake_seq_l);
+	MySerial.print(F("Quake str: "));
+	MySerial.println( (const __FlashStringHelper *) quake_seq_addr );
 	return quake_mode;
 }
 
